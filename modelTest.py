@@ -7,7 +7,7 @@ import pandas as pd
 
 # Charger votre ensemble de données à partir du fichier CSV
 # Assurez-vous d'ajuster le chemin du fichier selon votre configuration
-data = pd.read_csv("votre_fichier.csv")
+data = pd.read_csv("data/tmdb_movies_data.csv")
 
 # Supposons que X représente vos caractéristiques et y le box office
 X = data.drop("box_office", axis=1)

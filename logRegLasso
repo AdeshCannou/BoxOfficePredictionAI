@@ -1,0 +1,4 @@
+Mean Squared Error: 1.8318740776718412e+16
+Mean Absolute Error: 60183782.40844781
+R² Score: 0.38949299245726954
+Le modèle a été sauvegardé avec succès dans lasso_regression_model_alpha_1.0.joblib

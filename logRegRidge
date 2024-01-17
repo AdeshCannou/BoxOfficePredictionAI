@@ -1,0 +1,4 @@
+Mean Squared Error: 1.8318571662451268e+16
+Mean Absolute Error: 60179768.06445097
+R² Score: 0.3894986285130675
+Le modèle a été sauvegardé avec succès dans ridge_regression_model_alpha_1.0.joblib

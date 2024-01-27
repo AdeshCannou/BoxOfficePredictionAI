@@ -6,15 +6,15 @@ from sklearn.preprocessing import MultiLabelBinarizer
 import joblib
 
 # Charger les données depuis le fichier CSV
-file_path = 'data/message.csv'
-data = pd.read_csv(file_path, delimiter=',')
+file_path = 'data/nested.csv'
+data = pd.read_csv(file_path, delimiter=';')
 
 # Sélectionner les colonnes nécessaires
-selected_features = ['cast', 'director', 'runtime', 'genres', 'production_companies', 'budget_adj', 'revenue_adj']
-data = data[selected_features]
+#selected_features = ['cast', 'director', 'runtime', 'genres', 'production_companies', 'budget_adj', 'revenue_adj']
+#data = data[selected_features]
 
 # Gérer les valeurs manquantes
-data = data.dropna()
+#data = data.dropna()
 
 # Prétraiter les colonnes catégorielles (cast, director, genres, production_companies)
 mlb = MultiLabelBinarizer()
@@ -57,6 +57,6 @@ print(f'Mean Absolute Error: {mae}')
 print(f'R² Score: {r2}')
 
 # Sauvegarder le modèle
-model_filename = 'linear_regression_model.joblib'
-joblib.dump(model, model_filename)
-print(f"Le modèle a été sauvegardé avec succès dans {model_filename}")
+#model_filename = 'linear_regression_model.joblib'
+#joblib.dump(model, model_filename)
+#print(f"Le modèle a été sauvegardé avec succès dans {model_filename}")

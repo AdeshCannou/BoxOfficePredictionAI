@@ -2,9 +2,11 @@ import pandas as pd
 #data = pd.read_csv('data/tmdb_movies_data.csv')
 KEYS=['cast','director','runtime','genres','production_companies','budget_adj','revenue_adj']
 #cleaned = data[KEYS].dropna()
-#cleaned.to_csv('data/cleaned.csv')
+#cleaned = cleaned[cleaned['revenue_adj'] > 0]
+#cleaned = cleaned[cleaned['budget_adj'] > 0]
+#cleaned.to_csv('data/cleaned.csv',sep=';')
 
-cleaned = [ [ el.split('|') for el in i[:-1].split(',') ] for i in open('data/cleaned.csv', 'r', encoding='utf-8').readlines() ]
+cleaned = [ [ el.split('|') for el in i[:-1].split(';') ] for i in open('data/cleaned.csv', 'r', encoding='utf-8').readlines() ]
 
 keys=cleaned.pop(0)
 tab=[]
@@ -23,6 +25,6 @@ for line in cleaned:
                             KEYS[6]: line[7][0]
                         })
 frame=pd.DataFrame(tab)
-frame.to_csv('data/nested.csv')
+frame.to_csv('data/nested.csv', sep=';')
 
 

@@ -1,13 +1,14 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, cross_val_predict
 from sklearn.linear_model import Ridge
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from sklearn.preprocessing import MultiLabelBinarizer, StandardScaler
 import joblib
+import matplotlib.pyplot as plt
 
 # Charger les données depuis le fichier CSV
-file_path = 'data/message.csv'
-data = pd.read_csv(file_path, delimiter=',')
+file_path = 'data/nested.csv'
+data = pd.read_csv(file_path, delimiter=';')
 
 # Sélectionner les colonnes nécessaires
 selected_features = ['cast', 'director', 'runtime', 'genres', 'production_companies', 'budget_adj', 'revenue_adj']
@@ -44,7 +45,7 @@ X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
 # Initialiser le modèle de Régression Ridge
-alpha = 1.0  # Force de régularisation, ajustez selon vos besoins
+alpha = 100.0  # Force de régularisation, ajustez selon vos besoins
 model = Ridge(alpha=alpha)
 
 # Entraîner le modèle
@@ -62,7 +63,35 @@ print(f'Mean Squared Error: {mse}')
 print(f'Mean Absolute Error: {mae}')
 print(f'R² Score: {r2}')
 
-# Sauvegarder le modèle
-model_filename = f'ridge_regression_model_alpha_{alpha}.joblib'
-joblib.dump(model, model_filename)
-print(f"Le modèle a été sauvegardé avec succès dans {model_filename}")
+# Prédire sur l'ensemble de test
+y_test_pred = model.predict(X_test)
+
+# Évaluer les performances du modèle sur l'ensemble de test
+mse_test = mean_squared_error(y_test, y_test_pred)
+mae_test = mean_absolute_error(y_test, y_test_pred)
+r2_test = r2_score(y_test, y_test_pred)
+print("\nPerformance sur l'ensemble de test:")
+print(f'Mean Squared Error: {mse_test}')
+print(f'Mean Absolute Error: {mae_test}')
+print(f'R² Score: {r2_test}')
+
+# Visualiser les prédictions par rapport aux valeurs réelles sur l'ensemble de test
+plt.scatter(y_test, y_test_pred)
+plt.xlabel('Valeurs réelles')
+plt.ylabel('Prédictions')
+plt.title('Prédictions par rapport aux valeurs réelles')
+plt.show()
+
+# Diagnostiquer le surajustement en traçant les résidus
+residuals = y_test - y_test_pred
+plt.scatter(y_test, residuals)
+plt.xlabel('Valeurs réelles')
+plt.ylabel('Résidus')
+plt.title('Résidus par rapport aux valeurs réelles')
+plt.axhline(y=0, color='r', linestyle='-')
+plt.show()
+
+# Validation croisée pour une évaluation plus robuste
+y_pred_cv = cross_val_predict(model, X, y, cv=5)
+r2_cv = r2_score(y, y_pred_cv)
+print("\nR² Score avec validation croisée (cv=5):", r2_cv)

@@ -7,8 +7,8 @@ from sklearn.pipeline import make_pipeline
 import joblib
 
 # Charger les données depuis le fichier CSV
-file_path = 'data/message.csv'
-data = pd.read_csv(file_path, delimiter=',')
+file_path = 'data/nested.csv'
+data = pd.read_csv(file_path, delimiter=';')
 
 # Sélectionner les colonnes nécessaires
 selected_features = ['cast', 'director', 'runtime', 'genres', 'production_companies', 'budget_adj', 'revenue_adj']

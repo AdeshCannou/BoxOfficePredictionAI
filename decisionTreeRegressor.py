@@ -1,62 +1,82 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split, cross_val_predict
 from sklearn.tree import DecisionTreeRegressor
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from sklearn.preprocessing import MultiLabelBinarizer
-import joblib
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
 # Charger les données depuis le fichier CSV
-file_path = 'data/message.csv'
-data = pd.read_csv(file_path, delimiter=',')
+file_path = 'data/nested.csv'
+data = pd.read_csv(file_path, delimiter=';')
 
 # Sélectionner les colonnes nécessaires
-selected_features = ['cast', 'director', 'runtime', 'genres', 'production_companies', 'budget_adj', 'revenue_adj']
-data = data[selected_features]
+#selected_features = ['cast', 'director', 'runtime', 'genres', 'production_companies', 'budget_adj', 'revenue_adj']
+#data = data[selected_features]
 
 # Gérer les valeurs manquantes
-data = data.dropna()
+#data = data.dropna()
 
 # Prétraiter les colonnes catégorielles (cast, director, genres, production_companies)
 mlb = MultiLabelBinarizer()
-cast_df = pd.DataFrame(mlb.fit_transform(data.pop('cast')), columns=mlb.classes_, index=data.index)
-cast_df.columns = [f'cast_{col}' for col in cast_df.columns]
+for feature in ['cast', 'director', 'genres', 'production_companies']:
+    df = pd.DataFrame(mlb.fit_transform(data.pop(feature)), columns=mlb.classes_, index=data.index)
+    df.columns = [f'{feature}_{col}' for col in df.columns]
+    data = data.join(df)
 
-director_df = pd.DataFrame(mlb.fit_transform(data.pop('director')), columns=mlb.classes_, index=data.index)
-director_df.columns = [f'director_{col}' for col in director_df.columns]
-
-genres_df = pd.DataFrame(mlb.fit_transform(data.pop('genres')), columns=mlb.classes_, index=data.index)
-genres_df.columns = [f'genres_{col}' for col in genres_df.columns]
-
-production_companies_df = pd.DataFrame(mlb.fit_transform(data.pop('production_companies')), columns=mlb.classes_, index=data.index)
-production_companies_df.columns = [f'production_companies_{col}' for col in production_companies_df.columns]
-
-# Joindre les DataFrames créés avec le DataFrame principal
-data = data.join(cast_df).join(director_df).join(genres_df).join(production_companies_df)
-
-# Diviser les données en ensemble d'entraînement et ensemble de test
+# Diviser les données en ensemble d'entraînement, de validation et ensemble de test
 X = data.drop('revenue_adj', axis=1)
 y = data['revenue_adj']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.25, random_state=42)  # 20% pour validation
 
 # Initialiser le modèle d'Arbre de Décision
 model = DecisionTreeRegressor(random_state=42)
 
-# Entraîner le modèle
+# Entraîner le modèle sur l'ensemble d'entraînement
 model.fit(X_train, y_train)
 
+# Prédire sur l'ensemble de validation
+y_val_pred = model.predict(X_val)
+
+# Évaluer les performances du modèle sur l'ensemble de validation
+mse_val = mean_squared_error(y_val, y_val_pred)
+mae_val = mean_absolute_error(y_val, y_val_pred)
+r2_val = r2_score(y_val, y_val_pred)
+print("Performance sur l'ensemble de validation:")
+print(f'Mean Squared Error: {mse_val}')
+print(f'Mean Absolute Error: {mae_val}')
+print(f'R² Score: {r2_val}')
+
 # Prédire sur l'ensemble de test
-y_pred = model.predict(X_test)
+y_test_pred = model.predict(X_test)
 
-# Évaluer les performances du modèle
-mse = mean_squared_error(y_test, y_pred)
-mae = mean_absolute_error(y_test, y_pred)
-r2 = r2_score(y_test, y_pred)
+# Évaluer les performances du modèle sur l'ensemble de test
+mse_test = mean_squared_error(y_test, y_test_pred)
+mae_test = mean_absolute_error(y_test, y_test_pred)
+r2_test = r2_score(y_test, y_test_pred)
+print("\nPerformance sur l'ensemble de test:")
+print(f'Mean Squared Error: {mse_test}')
+print(f'Mean Absolute Error: {mae_test}')
+print(f'R² Score: {r2_test}')
 
-print(f'Mean Squared Error: {mse}')
-print(f'Mean Absolute Error: {mae}')
-print(f'R² Score: {r2}')
+# Visualiser les prédictions par rapport aux valeurs réelles sur l'ensemble de test
+plt.scatter(y_test, y_test_pred)
+plt.xlabel('Valeurs réelles')
+plt.ylabel('Prédictions')
+plt.title('Prédictions par rapport aux valeurs réelles')
+plt.show()
 
-# Sauvegarder le modèle
-model_filename = 'decision_tree_model.joblib'
-joblib.dump(model, model_filename)
-print(f"Le modèle a été sauvegardé avec succès dans {model_filename}")
+# Diagnostiquer le surajustement en traçant les résidus
+residuals = y_test - y_test_pred
+plt.scatter(y_test, residuals)
+plt.xlabel('Valeurs réelles')
+plt.ylabel('Résidus')
+plt.title('Résidus par rapport aux valeurs réelles')
+plt.axhline(y=0, color='r', linestyle='-')
+plt.show()
+
+# Validation croisée pour une évaluation plus robuste
+y_pred_cv = cross_val_predict(model, X, y, cv=5)
+r2_cv = r2_score(y, y_pred_cv)
+print("\nR² Score avec validation croisée (cv=5):", r2_cv)

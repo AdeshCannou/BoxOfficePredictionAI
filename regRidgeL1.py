@@ -6,7 +6,7 @@ from sklearn.preprocessing import MultiLabelBinarizer, StandardScaler
 import joblib
 
 # Charger les données depuis le fichier CSV
-file_path = 'data/message.csv'
+file_path = 'data/nested.csv'
 data = pd.read_csv(file_path, delimiter=',')
 
 # Sélectionner les colonnes nécessaires
@@ -44,7 +44,7 @@ X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
 # Initialiser le modèle de Régression Ridge
-alpha = 1.0  # Force de régularisation, ajustez selon vos besoins
+alpha = 100.0  # Force de régularisation, ajustez selon vos besoins
 model = Ridge(alpha=alpha)
 
 # Entraîner le modèle

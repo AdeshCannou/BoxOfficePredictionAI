@@ -95,3 +95,6 @@ plt.show()
 y_pred_cv = cross_val_predict(model, X, y, cv=5)
 r2_cv = r2_score(y, y_pred_cv)
 print("\nR² Score avec validation croisée (cv=5):", r2_cv)
+
+# Sauvegarder le modèle
+joblib.dump(model, 'ridge_regression_model_alpha_100.joblib')

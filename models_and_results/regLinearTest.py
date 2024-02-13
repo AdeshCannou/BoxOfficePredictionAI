@@ -57,6 +57,6 @@ print(f'Mean Absolute Error: {mae}')
 print(f'R² Score: {r2}')
 
 # Sauvegarder le modèle
-#model_filename = 'linear_regression_model.joblib'
-#joblib.dump(model, model_filename)
-#print(f"Le modèle a été sauvegardé avec succès dans {model_filename}")
+model_filename = 'linear_regression_model.joblib'
+joblib.dump(model, model_filename)
+print(f"Le modèle a été sauvegardé avec succès dans {model_filename}")

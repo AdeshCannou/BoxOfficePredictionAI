@@ -17,6 +17,9 @@ data = data[selected_features]
 # Gérer les valeurs manquantes
 data = data.dropna()
 
+# Afficher les premières lignes du DataFrame
+print(data.head())
+
 # Prétraiter les colonnes catégorielles (cast, director, genres, production_companies)
 mlb = MultiLabelBinarizer()
 cast_df = pd.DataFrame(mlb.fit_transform(data.pop('cast')), columns=mlb.classes_, index=data.index)
@@ -33,6 +36,8 @@ production_companies_df.columns = [f'production_companies_{col}' for col in prod
 
 # Joindre les DataFrames créés avec le DataFrame principal
 data = data.join(cast_df).join(director_df).join(genres_df).join(production_companies_df)
+
+print(data.head())
 
 # Diviser les données en ensemble d'entraînement et ensemble de test
 X = data.drop('revenue_adj', axis=1)
@@ -64,37 +69,40 @@ print(f'Mean Absolute Error: {mae}')
 print(f'R² Score: {r2}')
 
 # Prédire sur l'ensemble de test
-y_test_pred = model.predict(X_test)
+# y_test_pred = model.predict(X_test)
 
 # Évaluer les performances du modèle sur l'ensemble de test
-mse_test = mean_squared_error(y_test, y_test_pred)
-mae_test = mean_absolute_error(y_test, y_test_pred)
-r2_test = r2_score(y_test, y_test_pred)
-print("\nPerformance sur l'ensemble de test:")
-print(f'Mean Squared Error: {mse_test}')
-print(f'Mean Absolute Error: {mae_test}')
-print(f'R² Score: {r2_test}')
+# mse_test = mean_squared_error(y_test, y_test_pred)
+# mae_test = mean_absolute_error(y_test, y_test_pred)
+# r2_test = r2_score(y_test, y_test_pred)
+# print("\nPerformance sur l'ensemble de test:")
+# print(f'Mean Squared Error: {mse_test}')
+# print(f'Mean Absolute Error: {mae_test}')
+# print(f'R² Score: {r2_test}')
 
 # Visualiser les prédictions par rapport aux valeurs réelles sur l'ensemble de test
-plt.scatter(y_test, y_test_pred)
-plt.xlabel('Valeurs réelles')
-plt.ylabel('Prédictions')
-plt.title('Prédictions par rapport aux valeurs réelles')
-plt.show()
+# plt.scatter(y_test, y_test_pred)
+# plt.xlabel('Valeurs réelles')
+# plt.ylabel('Prédictions')
+# plt.title('Prédictions par rapport aux valeurs réelles')
+# plt.show()
 
-# Diagnostiquer le surajustement en traçant les résidus
-residuals = y_test - y_test_pred
-plt.scatter(y_test, residuals)
-plt.xlabel('Valeurs réelles')
-plt.ylabel('Résidus')
-plt.title('Résidus par rapport aux valeurs réelles')
-plt.axhline(y=0, color='r', linestyle='-')
-plt.show()
+# # Diagnostiquer le surajustement en traçant les résidus
+# residuals = y_test - y_test_pred
+# plt.scatter(y_test, residuals)
+# plt.xlabel('Valeurs réelles')
+# plt.ylabel('Résidus')
+# plt.title('Résidus par rapport aux valeurs réelles')
+# plt.axhline(y=0, color='r', linestyle='-')
+# plt.show()
 
 # Validation croisée pour une évaluation plus robuste
 y_pred_cv = cross_val_predict(model, X, y, cv=5)
 r2_cv = r2_score(y, y_pred_cv)
 print("\nR² Score avec validation croisée (cv=5):", r2_cv)
 
-# Sauvegarder le modèle
+# Sauvegarder le modèle et le scaler
 joblib.dump(model, 'ridge_regression_model_alpha_100.joblib')
+joblib.dump(scaler, 'scaler.joblib')
+joblib.dump(mlb, 'mlb.joblib')
+

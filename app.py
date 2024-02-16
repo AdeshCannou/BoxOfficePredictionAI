@@ -3,10 +3,8 @@ import joblib
 
 app = Flask(__name__)
 
-# Charger le modèle entraîné depuis le fichier pickle
 ridge_model = joblib.load('linear_model.pkl')
 
-# Lire les colonnes depuis le fichier colonnes.txt
 with open('columns.txt', 'r') as file:
     expected_columns = file.read().splitlines()
 
@@ -33,34 +31,33 @@ def preprocess_test_data(test_data, expected_columns):
     for col in expected_columns:
         if col in generated_columns:
             test_array.append(1)
+        elif col == 'runtime':
+            test_array.append(float(test_data['runtime']))
+        elif col == 'budget_adj':
+            test_array.append(float(test_data['budget_adj']))  
         else:
             test_array.append(0)
-    
+
     return test_array, None
 
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        # Récupérer les données envoyées en POST
         json_data = request.get_json()
 
-        # Vérifier si le JSON est bien formé
         if not json_data:
             return jsonify({'error': 'No data provided'}), 400
         
-        # Prétraiter les données de test
         test_array, error_message = preprocess_test_data(json_data, expected_columns)
         if error_message:
             return jsonify({'error': error_message}), 400
         
-        # Faire des prédictions sur les données de test
         predicted_revenue = ridge_model.predict([test_array])
 
-        # Retourner les prédictions au format JSON
         return jsonify({'predicted_revenue': predicted_revenue[0]}), 200
 
     except Exception as e:
-        return jsonify({'error': str(e)}), 500  # Renvoyer l'erreur 500 en cas d'exception non gérée
+        return jsonify({'error': str(e)}), 500  
 
 if __name__ == '__main__':
     app.run(debug=True)

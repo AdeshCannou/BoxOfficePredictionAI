@@ -22,31 +22,45 @@ def create_columns(test_data):
 
 def preprocess_test_data(test_data, expected_columns):
     test_array = []
+    required_features = ['cast', 'director', 'genres', 'production_companies', 'runtime', 'budget_adj']
+    
+    # Vérifier la présence des fonctionnalités requises
+    for feature in required_features:
+        if feature not in test_data:
+            return None, f"Missing feature: {feature}"
+    
     generated_columns = create_columns(test_data)
     for col in expected_columns:
         if col in generated_columns:
             test_array.append(1)
-        elif col == 'runtime':
-            test_array.append(test_data['runtime'])
-        elif col == 'budget_adj':
-            test_array.append(test_data['budget_adj'])
         else:
             test_array.append(0)
-    return test_array
+    
+    return test_array, None
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    # Récupérer les données envoyées en POST
-    json_data = request.get_json()
+    try:
+        # Récupérer les données envoyées en POST
+        json_data = request.get_json()
 
-    # Prétraiter les données de test
-    test_array = preprocess_test_data(json_data, expected_columns)
+        # Vérifier si le JSON est bien formé
+        if not json_data:
+            return jsonify({'error': 'No data provided'}), 400
+        
+        # Prétraiter les données de test
+        test_array, error_message = preprocess_test_data(json_data, expected_columns)
+        if error_message:
+            return jsonify({'error': error_message}), 400
+        
+        # Faire des prédictions sur les données de test
+        predicted_revenue = ridge_model.predict([test_array])
 
-    # Faire des prédictions sur les données de test
-    predicted_revenue = ridge_model.predict([test_array])
+        # Retourner les prédictions au format JSON
+        return jsonify({'predicted_revenue': predicted_revenue[0]}), 200
 
-    # Retourner les prédictions au format JSON
-    return jsonify({'predicted_revenue': predicted_revenue[0]})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500  # Renvoyer l'erreur 500 en cas d'exception non gérée
 
 if __name__ == '__main__':
     app.run(debug=True)

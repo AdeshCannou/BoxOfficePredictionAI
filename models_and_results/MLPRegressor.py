@@ -1,67 +1,50 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.neural_network import MLPRegressor
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-from sklearn.preprocessing import MultiLabelBinarizer, StandardScaler
-import joblib
+from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
 
 # Charger les données depuis le fichier CSV
 file_path = 'data/nested.csv'
 data = pd.read_csv(file_path, delimiter=';')
 
-# Sélectionner les colonnes nécessaires
-selected_features = ['cast', 'director', 'runtime', 'genres', 'production_companies', 'budget_adj', 'revenue_adj']
-data = data[selected_features]
+# Sélectionner les caractéristiques et la valeur cible
+selected_features = ['cast', 'director', 'runtime', 'genres', 'production_companies', 'budget_adj']
+target = 'revenue_adj'
 
-# Gérer les valeurs manquantes
-data = data.dropna()
+# Prétraitement des caractéristiques textuelles (encodage one-hot pour chaque colonne)
+data_encoded = pd.get_dummies(data[selected_features])
 
-# Prétraiter les colonnes catégorielles (cast, director, genres, production_companies)
-mlb = MultiLabelBinarizer()
-cast_df = pd.DataFrame(mlb.fit_transform(data.pop('cast')), columns=mlb.classes_, index=data.index)
-cast_df.columns = [f'cast_{col}' for col in cast_df.columns]
+# sauvegarder le nom des colonnes dans un fichier
+with open('columns.txt', 'w') as f:
+    for col in data_encoded.columns:
+        f.write(col + '\n')
+        
+# Diviser les données en ensembles d'entraînement et de test
+X_train, X_test, y_train, y_test = train_test_split(data_encoded, data[target], test_size=0.2, random_state=42)
 
-director_df = pd.DataFrame(mlb.fit_transform(data.pop('director')), columns=mlb.classes_, index=data.index)
-director_df.columns = [f'director_{col}' for col in director_df.columns]
+# Initialiser et entraîner le modèle MLPRegressor
+mlp_model = MLPRegressor(random_state=42)
+mlp_model.fit(X_train, y_train)
 
-genres_df = pd.DataFrame(mlb.fit_transform(data.pop('genres')), columns=mlb.classes_, index=data.index)
-genres_df.columns = [f'genres_{col}' for col in genres_df.columns]
+# Faire des prédictions sur l'ensemble de test
+y_pred = mlp_model.predict(X_test)
 
-production_companies_df = pd.DataFrame(mlb.fit_transform(data.pop('production_companies')), columns=mlb.classes_, index=data.index)
-production_companies_df.columns = [f'production_companies_{col}' for col in production_companies_df.columns]
-
-# Joindre les DataFrames créés avec le DataFrame principal
-data = data.join(cast_df).join(director_df).join(genres_df).join(production_companies_df)
-
-# Diviser les données en ensemble d'entraînement et ensemble de test
-X = data.drop('revenue_adj', axis=1)
-y = data['revenue_adj']
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-# Normaliser les caractéristiques
-scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
-
-# Initialiser le modèle de Réseaux de neurones (MLPRegressor)
-model = MLPRegressor(hidden_layer_sizes=(100,), max_iter=500, random_state=42)
-
-# Entraîner le modèle
-model.fit(X_train_scaled, y_train)
-
-# Prédire sur l'ensemble de test
-y_pred = model.predict(X_test_scaled)
-
-# Évaluer les performances du modèle
+# Calculer MSE
 mse = mean_squared_error(y_test, y_pred)
-mae = mean_absolute_error(y_test, y_pred)
-r2 = r2_score(y_test, y_pred)
+print("MSE:", mse)
 
-print(f'Mean Squared Error: {mse}')
-print(f'Mean Absolute Error: {mae}')
-print(f'R² Score: {r2}')
+# Calculer MAE
+mae = mean_absolute_error(y_test, y_pred)
+print("MAE:", mae)
+
+# Calculer le score R²
+r2 = r2_score(y_test, y_pred)
+print("R² score:", r2)
 
 # Sauvegarder le modèle
-model_filename = 'mlp_regressor_model.joblib'
-joblib.dump(model, model_filename)
-print(f"Le modèle a été sauvegardé avec succès dans {model_filename}")
+# import joblib
+# joblib.dump(mlp_model, 'mlp_model.pkl')
+
+# MSE: 3.4116371032996524e+16
+# MAE: 102753313.19549598
+# R² score: 0.3567287574630732

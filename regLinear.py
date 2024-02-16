@@ -1,6 +1,6 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import ElasticNet
+from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
 
 # Charger les données depuis le fichier CSV
@@ -22,12 +22,12 @@ with open('columns.txt', 'w') as f:
 # Diviser les données en ensembles d'entraînement et de test
 X_train, X_test, y_train, y_test = train_test_split(data_encoded, data[target], test_size=0.2, random_state=42)
 
-# Initialiser et entraîner le modèle ElasticNet
-elasticnet_model = ElasticNet()
-elasticnet_model.fit(X_train, y_train)
+# Initialiser et entraîner le modèle LinearRegression
+linear_model = LinearRegression()
+linear_model.fit(X_train, y_train)
 
 # Faire des prédictions sur l'ensemble de test
-y_pred = elasticnet_model.predict(X_test)
+y_pred = linear_model.predict(X_test)
 
 # Calculer MSE
 mse = mean_squared_error(y_test, y_pred)
@@ -42,9 +42,9 @@ r2 = r2_score(y_test, y_pred)
 print("R² score:", r2)
 
 # Sauvegarder le modèle
-# import joblib
-# joblib.dump(elasticnet_model, 'elasticnet_model.pkl')
+import joblib
+joblib.dump(linear_model, 'linear_model.pkl')
 
-# MSE: 3.3565883604463136e+16
-# MAE: 103159920.0156947
-# R² score: 0.36710831195353
+# MSE: 1.081493154393007e+16
+# MAE: 59557973.45564847
+# R² score: 0.7960822255835147

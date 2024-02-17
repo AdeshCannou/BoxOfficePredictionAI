@@ -68,7 +68,7 @@ def predict():
             predicted_revenues.append(predict_revenue(test_data))    
 
         # print(predicted_revenues)   
-             
+        
         # Calculer la prédiction moyenne
         average_predicted_revenue = sum(predicted_revenues) / len(predicted_revenues)
 

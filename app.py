@@ -53,7 +53,7 @@ def predict():
         # Générer toutes les combinaisons possibles des caractéristiques spécifiées
         combinations = list(product(json_data["cast"], json_data["director"], json_data["genres"], json_data["production_companies"]))
         
-        print(combinations)
+        #print(combinations)
         # Prédire et stocker les revenus pour chaque combinaison
         predicted_revenues = []
         for combination in combinations:

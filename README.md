@@ -13,9 +13,14 @@ Assurez-vous d'avoir activé un environnement virtuel avant d'exécuter cette co
 ## Structure du projet
 
 - `app.py`: Fichier principal contenant le code de l'API Flask.
-- `ridge_regression_model_alpha_100.joblib`: Modèle entraîné sauvegardé à l'aide de Joblib.
-- `data/nested.csv`: Fichier CSV contenant les données d'entraînement.
+- `linear_model.pkl`: Modèle entraîné sauvegardé à l'aide de Joblib.
+- `finalData_and_scripts/nested.csv`: Fichier CSV contenant les données d'entraînement.
 - `README.md`: Ce fichier README contenant des informations sur le projet.
+- `requirements.txt`: Fichier contenant les dépendances Python requises pour exécuter le projet.
+- `finalData_and_scripts/`: Dossier contenant les scripts utilisés pour nettoyer et préparer les données.
+- `data_exploration/`: Dossier contenant les scripts utilisés pour explorer les données.
+- `models_and_results/`: Dossier contenant l'ensemble des modèles testé et les résultats de l'entraînement.
+- `data/`: Dossier contenant les données brutes utilisées pour entraîner le modèle.
 
 ## Lancer le serveur de développement
 

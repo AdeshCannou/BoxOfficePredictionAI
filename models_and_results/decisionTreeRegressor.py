@@ -4,7 +4,7 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
 
 # Charger les données depuis le fichier CSV
-file_path = 'data/nested.csv'
+file_path = 'finalData_and_scripts/nested.csv'
 data = pd.read_csv(file_path, delimiter=';')
 
 # Sélectionner les caractéristiques et la valeur cible

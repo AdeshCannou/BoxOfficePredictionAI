@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import joblib
+from itertools import product
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -20,16 +21,12 @@ def create_columns(test_data):
             columns.append(f"{feature}_{values}")
     return columns
 
-def preprocess_test_data(test_data, expected_columns):
-    test_array = []
-    required_features = ['cast', 'director', 'genres', 'production_companies', 'runtime', 'budget_adj']
-    
-    # Vérifier la présence des fonctionnalités requises
-    for feature in required_features:
-        if feature not in test_data:
-            return None, f"Missing feature: {feature}"
-    
+def predict_revenue(test_data):
+    # Récupérer toutes les colonnes attendues pour chaque combinaison
     generated_columns = create_columns(test_data)
+    
+    # Créer un tableau de test pour chaque combinaison
+    test_array = []
     for col in expected_columns:
         if col in generated_columns:
             test_array.append(1)
@@ -39,8 +36,11 @@ def preprocess_test_data(test_data, expected_columns):
             test_array.append(float(test_data['budget_adj']))  
         else:
             test_array.append(0)
-
-    return test_array, None
+    
+    # Prédire le revenu pour la combinaison actuelle
+    predicted_revenue = ridge_model.predict([test_array])[0]
+    
+    return predicted_revenue
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -50,13 +50,29 @@ def predict():
         if not json_data:
             return jsonify({'error': 'No data provided'}), 400
         
-        test_array, error_message = preprocess_test_data(json_data, expected_columns)
-        if error_message:
-            return jsonify({'error': error_message}), 400
+        # Générer toutes les combinaisons possibles des caractéristiques spécifiées
+        combinations = list(product(json_data["cast"], json_data["director"], json_data["genres"], json_data["production_companies"]))
         
-        predicted_revenue = ridge_model.predict([test_array])
+        print(combinations)
+        # Prédire et stocker les revenus pour chaque combinaison
+        predicted_revenues = []
+        for combination in combinations:
+            test_data = {
+                'cast': combination[0],
+                'director': combination[1],
+                'genres': combination[2],
+                'production_companies': combination[3],
+                'runtime': json_data['runtime'],
+                'budget_adj': json_data['budget_adj']
+            }
+            predicted_revenues.append(predict_revenue(test_data))    
 
-        return jsonify({'predicted_revenue': predicted_revenue[0]}), 200
+        # print(predicted_revenues)   
+             
+        # Calculer la prédiction moyenne
+        average_predicted_revenue = sum(predicted_revenues) / len(predicted_revenues)
+
+        return jsonify({'predicted_revenue': average_predicted_revenue}), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500  

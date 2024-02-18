@@ -1,5 +1,10 @@
 # My movie will go on
-![Démo](public/my-movie-will-go-on%20-%20Demo.mp4)
+
+<video width="320" height="240" controls>
+  <source src="./FRONTEND/my-movie-will-go-on/public/my-movie-will-go-on - Demo.mp4" type="video/mp4">
+</video>
+
+![Démo](https://youtu.be/HTeVDr_0yz0)
 
 Ce site vous permettra de tester notre IA grace à un formulaire
 

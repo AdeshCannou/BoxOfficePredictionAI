@@ -2,7 +2,9 @@
 
 Ce projet consiste à entraîner un modèle de machine learning pour prédire le box office d'un film en fonction de diverses caractéristiques telles que le casting, le réalisateur, la durée, le genre, les sociétés de production et le budget.
 
-![Démo](https://youtu.be/HTeVDr_0yz0)
+<video width="320" height="240" controls>
+  <source src="./FRONTEND/my-movie-will-go-on/public/my-movie-will-go-on - Demo.mp4" type="video/mp4">
+</video>
 
 ## Installation des dépendances
 

@@ -1,10 +1,10 @@
 # My movie will go on
 
-<video width="320" height="240" controls>
-  <source src="https://youtu.be/HTeVDr_0yz0">
+<video width="100%" height="auto" controls>
+  <source src="./public/my-movie-will-go-on%20-%20Demo.mp4">
 </video>
 
-![Démo](https://youtu.be/HTeVDr_0yz0)
+Voici une [démo](https://youtu.be/HTeVDr_0yz0) l'application que vous pouvez également rerouver [ici](./public/my-movie-will-go-on%20-%20Demo.mp4).
 
 Ce site vous permettra de tester notre IA grace à un formulaire
 

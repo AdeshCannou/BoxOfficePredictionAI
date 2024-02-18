@@ -4,7 +4,7 @@
   <source src="./public/my-movie-will-go-on%20-%20Demo.mp4">
 </video>
 
-Voici une [démo](https://youtu.be/HTeVDr_0yz0) l'application que vous pouvez également rerouver [ici](./public/my-movie-will-go-on%20-%20Demo.mp4).
+Voici une [démo](https://youtu.be/HTeVDr_0yz0) l'application que vous pouvez également retrouver [ici](./public/my-movie-will-go-on%20-%20Demo.mp4).
 
 Ce site vous permettra de tester notre IA grace à un formulaire
 

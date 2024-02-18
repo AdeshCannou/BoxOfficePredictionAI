@@ -6,7 +6,7 @@ Ce projet consiste à entraîner un modèle de machine learning pour prédire le
   <source src="./FRONTEND/my-movie-will-go-on/public/my-movie-will-go-on - Demo.mp4" type="video/mp4">
 </video>
 
-Voici une [démo](https://youtu.be/HTeVDr_0yz0) l'application que vous pouvez également rerouver [ici](./FRONTEND/my-movie-will-go-on/public/my-movie-will-go-on%20-%20Demo.mp4).
+Voici une [démo](https://youtu.be/HTeVDr_0yz0) l'application que vous pouvez également retrouver [ici](./FRONTEND/my-movie-will-go-on/public/my-movie-will-go-on%20-%20Demo.mp4).
 
 ## Installation des dépendances
 
@@ -23,10 +23,11 @@ Assurez-vous d'avoir activé un environnement virtuel avant d'exécuter cette co
 - `finalData_and_scripts/nested.csv`: Fichier CSV contenant les données d'entraînement.
 - `README.md`: Ce fichier README contenant des informations sur le projet.
 - `requirements.txt`: Fichier contenant les dépendances Python requises pour exécuter le projet.
+- `data/`: Dossier contenant les données brutes utilisées pour entraîner le modèle.
 - `finalData_and_scripts/`: Dossier contenant les scripts utilisés pour nettoyer et préparer les données.
 - `data_exploration/`: Dossier contenant les scripts utilisés pour explorer les données.
 - `models_and_results/`: Dossier contenant l'ensemble des modèles testé et les résultats de l'entraînement.
-- `data/`: Dossier contenant les données brutes utilisées pour entraîner le modèle.
+- `FRONTEND/my-movie-will-go-on`: Dossier contenant le code de l'application web.
 
 ## Lancer le serveur de développement
 

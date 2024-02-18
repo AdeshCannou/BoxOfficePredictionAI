@@ -45,3 +45,5 @@ Vous pouvez utiliser l'API en envoyant une requête POST à l'URL `http://localh
   "budget_adj": 60000000
 }
 ```
+
+Suivez [ce lien](FRONTEND/my-movie-will-go-on/README.md) pour installer et utiliser l'application web.

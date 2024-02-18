@@ -2,6 +2,8 @@
 
 Ce projet consiste à entraîner un modèle de machine learning pour prédire le box office d'un film en fonction de diverses caractéristiques telles que le casting, le réalisateur, la durée, le genre, les sociétés de production et le budget.
 
+![Démo](https://youtu.be/HTeVDr_0yz0)
+
 ## Installation des dépendances
 
 Pour exécuter ce projet, vous devez disposer de Python 3.x installé sur votre système. Vous pouvez ensuite installer les dépendances en exécutant la commande suivante :

@@ -1,7 +1,8 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, cross_val_predict
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
+import matplotlib.pyplot as plt
 
 # Charger les données depuis le fichier CSV
 file_path = 'finalData_and_scripts/nested.csv'
@@ -44,3 +45,26 @@ print("R² score:", r2) # R² score: 0.9997396531015507
 # Sauvegarder le modèle
 # import joblib
 # joblib.dump(dt_model, 'decision_tree_model.pkl')
+
+# Visualiser les prédictions par rapport aux valeurs réelles sur l'ensemble de test
+# plt.scatter(y_test, y_pred)
+# plt.xlabel('Valeurs réelles')
+# plt.ylabel('Prédictions')
+# plt.title('Prédictions par rapport aux valeurs réelles')
+# plt.show()
+
+# # Diagnostiquer le surajustement en traçant les résidus
+# residuals = y_test - y_pred
+# plt.scatter(y_test, residuals)
+# plt.xlabel('Valeurs réelles')
+# plt.ylabel('Résidus')
+# plt.title('Résidus par rapport aux valeurs réelles')
+# plt.axhline(y=0, color='r', linestyle='-')
+# plt.show()
+
+# # Validation croisée pour une évaluation plus robuste
+# X = data_encoded
+# y = data[target]
+# y_pred_cv = cross_val_predict(dt_model, X, y, cv=5)
+# r2_cv = r2_score(y, y_pred_cv)
+# print("\nR² Score avec validation croisée (cv=5):", r2_cv)
